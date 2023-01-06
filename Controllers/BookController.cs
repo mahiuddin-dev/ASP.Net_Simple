@@ -117,6 +117,14 @@ namespace CrudApplication.Controllers
         // GET: Book/Delete/5
         public ActionResult Delete(int id)
         {
+            using(MySqlConnection con = new MySqlConnection(conString))
+            {
+                con.Open();
+                string q = "DELETE FROM Book WHERE ID=@id";
+                MySqlCommand cmd = new MySqlCommand(q, con);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
             return RedirectToAction("Index");
         }
     }
