@@ -98,7 +98,7 @@ namespace CrudApplication.Controllers
                 using(MySqlConnection con = new MySqlConnection(conString))
                 {
                     con.Open();
-                    string q = "";
+                    string q = "UPDATE Book SET name=@name, author=@author, publish=@publish WHERE ID=@id";
                     MySqlCommand cmd = new MySqlCommand(q, con);
                     cmd.Parameters.AddWithValue("@id",book.id);
                     cmd.Parameters.AddWithValue("@name",book.name);
