@@ -66,8 +66,26 @@ namespace CrudApplication.Controllers
         // GET: Book/Edit/5
         public ActionResult Edit(int id)
         {
-            
-            return View();
+            Book book = new Book();
+            DataTable datatable = new DataTable();
+            using(MySqlConnection con = new MySqlConnection(conString))
+            {
+                con.Open();
+                string q = "SELECT * FROM Book WHERE ID="+id;
+                MySqlDataAdapter dt = new MySqlDataAdapter(q, con);
+                dt.Fill(datatable);
+            }
+
+            if(datatable.Rows.Count == 1)
+            {
+                book.id = Convert.ToInt32(datatable.Rows[0][0].ToString());
+                book.name = datatable.Rows[0][1].ToString();
+                book.author = datatable.Rows[0][2].ToString();
+                book.publish = datatable.Rows[0][3].ToString();
+                return View(book);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // POST: Book/Edit/5
@@ -77,9 +95,20 @@ namespace CrudApplication.Controllers
             try
             {
                 // TODO: Add update logic here
+                using(MySqlConnection con = new MySqlConnection(conString))
+                {
+                    con.Open();
+                    string q = "";
+                    MySqlCommand cmd = new MySqlCommand(q, con);
+                    cmd.Parameters.AddWithValue("@id",book.id);
+                    cmd.Parameters.AddWithValue("@name",book.name);
+                    cmd.Parameters.AddWithValue("@author",book.author);
+                    cmd.Parameters.AddWithValue("@publish", book.publish);
+                    cmd.ExecuteNonQuery();
+                }
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception exc)
             {
                 return View();
             }
